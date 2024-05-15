@@ -222,7 +222,7 @@ app.listen(port, (req, res) => {
 
 
 
-//*****************************************8 */
+
 // APPEARENCE: All the books in the home page are orgonized in a different category. so that, user can easily find their book. also home slider has been showed so that user can get info easily.
 // BORROW-BOOK: If user want they can borrow their favourite book. and each user can see all the  books they had borrowed. they will return the book within the returned date they provided
 // CRUD: user have freedom to add any book at any time.also user can update any book information if any wrong information added mistakenly.
