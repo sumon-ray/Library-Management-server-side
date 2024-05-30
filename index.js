@@ -10,9 +10,11 @@ const cookieParser = require("cookie-parser");
 const corsOptions = {
   origin: [
     'https://library-management-1d9c1.web.app',
+   "https://timely-cendol-cbb697.netlify.app",
     "http://localhost:5173",
     "http://localhost:5174",
     "http://localhost:5175",
+    
   ],
   credentials: true,
   // optionsSuccessStatus: 200,
@@ -68,7 +70,7 @@ async function run() {
       const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
         expiresIn: "365d",
       });
-
+  
       // res.send({token}) // data moddhe pabo
       res
         .cookie("token", token, {
@@ -103,10 +105,23 @@ async function run() {
       const result = await bookCollection.find().toArray();
       res.send(result);
     });
+    // get all data without verify token
     app.get("/freeBooks",  async (req, res) => {
       const result = await bookCollection.find().toArray();
       res.send(result);
     });
+    // 
+    app.get("/searchBooks", async (req, res) => {
+      const { search } = req.query;
+      const query = search ? { name: new RegExp(search, "i") } : {};
+      try {
+        const result = await bookCollection.find(query).toArray();
+        res.send(result);
+      } catch (error) {
+        res.status(500).json({ error: "An error occurred while searching for books." });
+      }
+    });
+// *************************************    
     // get filtered data if book quantity > 0
     app.get("/filter", async (req, res) => {
       const result = await bookCollection
@@ -169,7 +184,7 @@ async function run() {
       }
     });
 
-    
+
     //  *******************************************************
 
     // ******************************************************
@@ -179,7 +194,7 @@ async function run() {
       const result = await borrowBookCollection.deleteOne({
         _id: new ObjectId(id),
       });
-      console.log(result);
+      // console.log(result);
       const result2 = await bookCollection.updateOne(
         { _id: new ObjectId(req.query.bookId) },
         { $inc: { quantity: 1 } }
@@ -231,3 +246,6 @@ app.listen(port, (req, res) => {
 // CRUD: user have freedom to add any book at any time.also user can update any book information if any wrong information added mistakenly.
 // JWT: for keeping user borrowed book secure jwt has been implemented. so that, unauthorized user will now get permit to see other's borrowed book.
 // SECURITY: for security firebase authenticatin system has been used. also private route has been implemented. so that, user can not navigate all page without login the website.
+
+
+// got 0/60 due to live link not working
